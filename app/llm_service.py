@@ -8,10 +8,7 @@ from groq import Groq
 logger = logging.getLogger(__name__)
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-
-# FIX: Default to localhost for local dev; Docker Compose overrides via env var
 REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
-
 redis_client = None
 try:
     redis_client = redis.Redis(
@@ -47,7 +44,7 @@ async def get_llm_response(prompt: str, system_prompt: str, secret: str) -> str:
                 {"role": "user", "content": prompt}
             ],
             model="openai/gpt-oss-120b",  # GPT OSS 120B via Groq
-            temperature=0.2,              # Balanced: Deterministic but allows hints
+            temperature=0.7,              # Higher: Makes model attempt encodings so guardrails can trigger
             max_tokens=150                # Increased to allow Base64/ASCII generation
         ))
 
