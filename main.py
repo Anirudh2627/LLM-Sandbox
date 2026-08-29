@@ -62,15 +62,15 @@ async def process_prompt(request: Request, data: UserPrompt):
     elif check_output_guardrail(reply, SECRET_CODE):
         logger.info(f"[LEAK_ATTEMPT] IP:{client_ip} | Prompt:{clean_msg[:50]}...")
         reply = "[REDACTED] Security Alert"
-        status = "blocked"  # ✅ FIX: Explicitly set to blocked when guardrail triggers
+        status = "blocked"  
 
     elif "[REDACTED]" in reply or "Security Alert" in reply:
         logger.warning(f"[PARTIAL_LEAK] IP:{client_ip} | Redaction marker found")
         reply = "[REDACTED] Security Alert"
-        status = "blocked"  # ✅ FIX: Catch cases where guardrail missed but redaction exists
+        status = "blocked"  
 
     else:
-        status = "success"  # Only legitimate, safe responses get "success"
+        status = "success" 
 
     latency = time.time() - start_time
     logger.info(f"[REQUEST] IP:{client_ip} | Status:{status} | Latency:{latency:.2f}s")
