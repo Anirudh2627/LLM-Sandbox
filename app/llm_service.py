@@ -6,6 +6,8 @@ import redis
 from groq import Groq
 
 logger = logging.getLogger(__name__)
+CACHE_VERSION = os.getenv("CACHE_VERSION", "v1") 
+
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
