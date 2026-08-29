@@ -23,8 +23,9 @@ except Exception as e:
     redis_client = None
 
 async def get_llm_response(prompt: str, system_prompt: str, secret: str) -> str:
+    CACHE_VERSION = os.getenv("CACHE_VERSION", "v1")
+    cache_key = hashlib.md5(f"{CACHE_VERSION}:{prompt}".encode()).hexdigest()
     # Cache-busting during dev: append timestamp to avoid stale refusals
-    cache_key = hashlib.md5(f"{prompt}_{os.urandom(4).hex()}".encode()).hexdigest()
 
     if redis_client:
         try:
@@ -40,7 +41,7 @@ async def get_llm_response(prompt: str, system_prompt: str, secret: str) -> str:
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": prompt}
             ],
-            model="qwen/qwen3.6-27b",  # Verified working model
+            model="openai/gpt-oss-120b",  # Verified working model
             temperature=0.7,           # Allows creative attempts
             max_tokens=250             # Increased for encoded outputs
         ))
